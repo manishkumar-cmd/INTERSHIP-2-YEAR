@@ -1,0 +1,6 @@
+brand,processor_brand,processor_name,processor_gnrtn,ram_gb,ram_type,ssd,hdd,os,os_bit,graphic_card_gb,weight,warranty,Touchscreen,msoffice,Price,rating,Number of Ratings,Number of Reviews
+MSI,Intel,Core i7,10th,16 GB,DDR4,512 GB,0 GB,Windows,64-bit,4 GB,Casual,2 years,No,No,79990,4 stars,484,56
+MSI,Intel,Core i7,9th,8 GB,DDR4,512 GB,0 GB,Windows,64-bit,4 GB,Casual,2 years,No,No,66990,4 stars,1639,230
+MSI,Intel,Core i7,10th,16 GB,DDR4,1024 GB,0 GB,Windows,64-bit,6 GB,Casual,2 years,No,No,84990,4 stars,498,64
+MSI,Intel,Core i7,10th,8 GB,DDR4,256 GB,1024 GB,Windows,64-bit,4 GB,Casual,2 years,No,No,63990,4 stars,794,83
+MSI,AMD,Ryzen 7,Not Available,16 GB,DDR4,1024 GB,0 GB,Windows,64-bit,8 GB,Casual,1 year,No,No,99990,4 stars,108,24
