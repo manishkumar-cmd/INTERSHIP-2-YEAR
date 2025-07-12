@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pay & Get PDF</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Pay ₹99 and Get Instant Access to PDF</h2>
+        <img src="{{ url_for('static', filename='qr.png') }}" alt="QR Code for Payment">
+
+        <p>Scan the QR code above or use UPI ID: <strong>9680459282@fam</strong></p>
+
+        <form action="/submit" method="POST">
+            <input type="text" name="name" placeholder="Your Name" required><br>
+            <input type="email" name="email" placeholder="Your Email" required><br>
+            <input type="text" name="upi" placeholder="Your UPI ID (optional)"><br>
+            <button type="submit">I Have Paid</button>
+        </form>
+    </div>
+</body>
+</html>
+
