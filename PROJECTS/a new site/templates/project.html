@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bike Price Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 40px;
+        }
+        .container {
+            background-color: white;
+            max-width: 500px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 12px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        input[type="submit"] {
+            width: 100%;
+            background-color: #28a745;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 20px;
+            background: #d4edda;
+            padding: 15px;
+            border-left: 5px solid #28a745;
+            color: #155724;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Bike Price Prediction</h2>
+        <form method="POST" action="/project">
+            <label for="brand_name">Brand:</label>
+            <select name="brand_name" required>
+                <option value="">Select a Brand</option>
+                <option value="Honda">Honda</option>
+                <option value="Yamaha">Yamaha</option>
+                <option value="Hero">Hero</option>
+                <option value="Bajaj">Bajaj</option>
+                <option value="TVS">TVS</option>
+                <option value="Suzuki">Suzuki</option>
+                <option value="KTM">KTM</option>
+                <option value="Royal Enfield">Royal Enfield</option>
+            </select>
+
+            <label for="bike_model">Model Name:</label>
+            <input type="text" name="bike_model" placeholder="e.g. Splendor, Pulsar" required>
+
+            <label for="cc">Engine Capacity (in cc):</label>
+            <input type="text" name="cc" placeholder="e.g. 150" required>
+
+            <label for="year">Year of Manufacture:</label>
+            <input type="text" name="year" placeholder="e.g. 2019" required>
+
+            <label for="kms_driven">Kilometers Driven:</label>
+            <input type="text" name="kms_driven" placeholder="e.g. 25000" required>
+
+            <input type="submit" value="Predict Price">
+        </form>
+
+        {% if prediction %}
+            <div class="result">
+                Predicted Bike Price: ₹{{ prediction }}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
