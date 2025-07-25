@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SOYOC Chatbot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg-light: #f0f2f5;
+      --bg-dark: #1e1f21;
+      --text-light: #000;
+      --text-dark: #fff;
+      --user-bg: #DCF8C6;
+      --bot-bg: #ffffff;
+      --bot-bg-dark: #2b2d31;
+      --border-light: #ccc;
+      --border-dark: #444;
+      --accent: #4A90E2;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-light);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.dark {
+      background-color: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    header {
+      background-color: var(--accent);
+      color: white;
+      padding: 10px 20px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .chat-title {
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    .toggle-container {
+      font-size: 0.9rem;
+    }
+
+    .chat-wrapper {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      min-height: 90vh;
+    }
+
+    #chat-container {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .message-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .message-row.user {
+      justify-content: flex-end;
+    }
+
+    .message-row.bot {
+      justify-content: flex-start;
+    }
+
+    .avatar {
+      font-size: 1.5rem;
+      user-select: none;
+    }
+
+    .message {
+      max-width: 70%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    .user .message {
+      background-color: var(--user-bg);
+    }
+
+    .bot .message {
+      background-color: var(--bot-bg);
+      border: 1px solid var(--border-light);
+    }
+
+    body.dark .bot .message {
+      background-color: var(--bot-bg-dark);
+      border: 1px solid var(--border-dark);
+    }
+
+    #input-area {
+      display: flex;
+      gap: 10px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 12px 20px;
+      background-color: var(--accent);
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #3a78c2;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Typing animation */
+    .typing .message {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .typing span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent);
+      border-radius: 50%;
+      animation: blink 1.2s infinite;
+    }
+
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="chat-title">🤖 SOYOC Chatbot</div>
+    <div class="toggle-container">
+      <label><input type="checkbox" id="darkToggle"> Dark Mode</label>
+    </div>
+  </header>
+
+  <div class="chat-wrapper">
+    <div id="chat-container"></div>
+
+    <div id="input-area">
+      <input id="user-input" type="text" placeholder="Puch Bhai..." autocomplete="off" />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const chatContainer = document.getElementById("chat-container");
+    const darkToggle = document.getElementById("darkToggle");
+
+    // Load dark mode preference
+    if (localStorage.getItem("darkMode") === "true") {
+      document.body.classList.add("dark");
+      darkToggle.checked = true;
+    }
+
+    darkToggle.addEventListener("change", () => {
+      document.body.classList.toggle("dark");
+      localStorage.setItem("darkMode", darkToggle.checked);
+    });
+
+    async function sendMessage() {
+      const input = document.getElementById("user-input");
+      const message = input.value.trim();
+      if (!message) return;
+
+      appendMessage("user", message, "👤");
+      input.value = "";
+
+      // Loading animation
+      const loadingRow = document.createElement("div");
+      loadingRow.className = "message-row bot typing";
+      loadingRow.innerHTML = `
+        <div class="avatar">🤖</div>
+        <div class="message">
+          <span></span><span></span><span></span>
+        </div>
+      `;
+      chatContainer.appendChild(loadingRow);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+
+      try {
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message })
+        });
+
+        const data = await res.json();
+        loadingRow.remove();
+        appendMessage("bot", data.response || "⚠️ No response.", "🤖");
+      } catch (err) {
+        loadingRow.remove();
+        appendMessage("bot", "⚠️ Server error or model not running.", "🤖");
+      }
+    }
+
+    function appendMessage(sender, text, icon) {
+      const row = document.createElement("div");
+      row.className = `message-row ${sender}`;
+      row.innerHTML = `
+        ${sender === 'bot' ? `<div class="avatar">${icon}</div>` : ''}
+        <div class="message">${text}</div>
+        ${sender === 'user' ? `<div class="avatar">${icon}</div>` : ''}
+      `;
+      chatContainer.appendChild(row);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    document.getElementById("user-input").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+</body>
+</html>
+
+
